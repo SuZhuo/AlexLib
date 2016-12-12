@@ -1,0 +1,11 @@
+#SliceLib:
+Debug
+x64
+*.ico
+*.jpg
+*.vcxproj
+*.filters
+*.user
+*.dat
+*.resx
+*.png
