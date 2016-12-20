@@ -17,6 +17,14 @@
 #include"vtkResliceCursorPolyDataAlgorithm.h"
 #include"vtkMetaImageReader.h"
 #include"vtkCamera.h"
+#include"vtkMath.h"
+#include"vtkTransform.h"
+#include"vtkPlaneSource.h"
+#include"vtkPlane.h"
+#include"vtkPolyDataMapper.h"
+#include"vtkImageViewer2.h"
+#include"vtkInteractorStyleTrackballCamera.h"
+#include"vtkRendererCollection.h"
 
 #include<array>
 
@@ -31,11 +39,14 @@ namespace SliceLib
 	class SLICELIB_API SliceView
 	{
 	public:
-		SliceView(HWND parent);
+		SliceView(HWND parent, HWND NOTE);
 		~SliceView();
 		void PreInit();
 		void SetImageData(vtkSmartPointer<vtkImageData>);
+		void SetImageData2(vtkSmartPointer<vtkImageData>);
 		void SetSliceDirection(int);
+		void SetSliceIndex(int);
+		void SetCenter(double, double, double);
 		vtkSmartPointer<vtkImagePlaneWidget> GetImagePlaneWidget();
 		vtkSmartPointer<vtkResliceCursorWidget> GetResliceCursorWidget();
 		//vtkSmartPointer<vtkImagePlaneWidget> GetImagePlaneWidget();
@@ -44,6 +55,9 @@ namespace SliceLib
 		void SetResliceCursor(vtkSmartPointer<vtkResliceCursor>);
 		vtkSmartPointer<vtkResliceCursor> GetResliceCursor();
 		void Render();
+		void RotateTo(double* norm);
+		void Update(vtkSmartPointer<vtkTransform>);
+		void Update(double*);
 
 		//m_AxialView, m_SagittalView, m_CoronalView, m_3DView
 		static void GroupViews(vtkSmartPointer<vtkImageData> imageData,
@@ -54,6 +68,7 @@ namespace SliceLib
 			SliceView* p_CoronalView, SliceView* p_3DView);
 	private:
 		void SetupReslice();
+		void SetupReslice2();
 
 	private:
 		vtkSmartPointer<vtkImageData> m_ImageData;
@@ -65,9 +80,15 @@ namespace SliceLib
 		vtkSmartPointer<vtkResliceCursorWidget> m_ResliceCursorWidget;
 		vtkSmartPointer<vtkResliceCursorThickLineRepresentation> m_ResliceCursorRep;
 
+		vtkSmartPointer<vtkImageViewer2> m_viewer;
+
+
 		HWND m_parent;
+		HWND m_note;
 
 		int m_direction = 0;
+		int m_index = 0;
+		double m_center[3];
 	};
 }
 
