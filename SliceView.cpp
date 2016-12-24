@@ -142,6 +142,33 @@ namespace SliceLib
 		m_center[2] = c2;
 	}
 
+	void SliceView::ResetImageData2(vtkSmartPointer<vtkImageData> imageData)
+	{
+		if (nullptr == imageData)
+		{
+			return;
+		}
+		m_ImageData = imageData;
+
+		m_ImageplaneWidget->SetInputData(m_ImageData);
+		m_ImageplaneWidget->SetPlaneOrientation(m_direction);
+
+		m_ImageplaneWidget->SetSliceIndex(m_index);
+
+		double* range = m_ImageData->GetScalarRange();
+
+		m_viewer->SetInputData(m_ImageplaneWidget->GetResliceOutput());
+
+		m_viewer->SetColorLevel((range[1] - range[0]) / 2);
+		m_viewer->SetColorWindow(range[1] - range[0]);
+		m_viewer->SetSlice(1);
+		m_viewer->SetSliceOrientationToXY();
+		m_viewer->GetImageActor()->RotateX(180);
+		m_viewer->Render();
+
+		m_ImageplaneWidget->SetWindowLevel(range[1] - range[0], (range[1] - range[0]) / 2);
+	}
+
 	void SliceView::SetImageData2(vtkSmartPointer<vtkImageData> imageData)
 	{
 		if (nullptr == imageData)
@@ -193,7 +220,7 @@ namespace SliceLib
 		m_ImageplaneWidget->SetInputData(m_ImageData);
 		m_ImageplaneWidget->SetPlaneOrientation(m_direction);
 
-		int* dims = m_ImageData->GetDimensions();
+		//int* dims = m_ImageData->GetDimensions();
 		//if (dims[m_direction] < m_index) m_index = dims[m_direction];
 		m_ImageplaneWidget->SetSliceIndex(m_index);
 		m_ImageplaneWidget->On();
@@ -212,6 +239,7 @@ namespace SliceLib
 		m_viewer->SetColorWindow(range[1] - range[0]);
 		m_viewer->SetSlice(1);
 		m_viewer->SetSliceOrientationToXY();
+		m_viewer->GetImageActor()->RotateX(180);
 		m_viewer->Render();
 		//iren->Start();
 

@@ -29,9 +29,9 @@
 	{
 		m_imageData = imageData;
 		m_bounds = imageData->GetBounds();
-		std::cout << "slicebds: " << m_bounds[0] << "  " << m_bounds[1] << "  "
-			<< m_bounds[2] << "  " << m_bounds[3] << "  "
-			<< m_bounds[4] << "  " << m_bounds[5] << "  " << std::endl;
+		//std::cout << "slicebds: " << m_bounds[0] << "  " << m_bounds[1] << "  "
+		//	<< m_bounds[2] << "  " << m_bounds[3] << "  "
+		//	<< m_bounds[4] << "  " << m_bounds[5] << "  " << std::endl;
 	}
 
 	void SliceCouple::SetInteractor(vtkSmartPointer<vtkRenderWindowInteractor> iren)
@@ -301,6 +301,33 @@
 		m_iren->Render();
 	}
 
+	void SliceCouple::Reset(vtkSmartPointer<vtkImageData> imageData)
+	{
+		m_imageData = imageData;
+		m_bounds = imageData->GetBounds();
+		m_plawi->PlaceWidget(m_imageData->GetBounds());
+		m_plawi->SetOrigin(m_imageData->GetCenter());
+
+		//////left and right
+		int* dims = m_imageData->GetDimensions();
+		m_left->SetSliceDirection(0);
+		m_left->SetSliceIndex(dims[0] / 2);
+
+		m_right->SetSliceDirection(0);
+		m_right->SetSliceIndex(dims[0] / 2 + 1);
+
+		m_left->ResetImageData2(m_imageData);
+		m_right->ResetImageData2(m_imageData);
+
+		//auto ps = static_cast<vtkPlaneSource*>(m_left->GetImagePlaneWidget()
+		//	->GetPolyDataAlgorithm());
+
+		//m_map->RemoveAllInputs();
+		//m_map->SetInputConnection(ps->GetOutputPort());
+
+		this->Render();
+	}
+
 	void SliceCouple::TurnOn()
 	{
 		//First, SliceView
@@ -463,11 +490,11 @@
 		auto ps = static_cast<vtkPlaneSource*>(m_left->GetImagePlaneWidget()
 			->GetPolyDataAlgorithm());
 
-		auto map = vtkSmartPointer<vtkPolyDataMapper>::New();
-		map->SetInputConnection(ps->GetOutputPort());
+		m_map = vtkSmartPointer<vtkPolyDataMapper>::New();
+		m_map->SetInputConnection(ps->GetOutputPort());
 
 		m_plane = vtkSmartPointer<vtkActor>::New();
-		m_plane->SetMapper(map);
+		m_plane->SetMapper(m_map);
 		this->m_plawi->GetCurrentRenderer()->AddActor(m_plane);
 
 		this->m_iren->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(m_plane);

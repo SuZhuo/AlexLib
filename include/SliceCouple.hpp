@@ -40,6 +40,7 @@ using namespace SliceLib;
 		void SendMsg();
 		void Calibrate();
 		void GoCenter();
+		void Reset(vtkSmartPointer<vtkImageData> imageData);
 
 	private:
 		std::unique_ptr<double[]> Rotate(double* norm, int dir, double angle);
@@ -57,6 +58,8 @@ using namespace SliceLib;
 		vtkSmartPointer<vtkImageData> m_imageData;
 		vtkSmartPointer<vtkRenderWindowInteractor> m_iren;
 		vtkSmartPointer<vtkImplicitPlaneWidgetUser> m_plawi;
+
+		vtkSmartPointer<vtkPolyDataMapper> m_map;
 		vtkSmartPointer<vtkActor> m_plane;
 
 		vtkSmartPointer<vtkRenderer> m_renderNote;
