@@ -25,6 +25,7 @@
 #include"vtkImageViewer2.h"
 #include"vtkInteractorStyleTrackballCamera.h"
 #include"vtkRendererCollection.h"
+#include"vtkImageActor.h"
 
 #include<array>
 
@@ -44,6 +45,7 @@ namespace SliceLib
 		void PreInit();
 		void SetImageData(vtkSmartPointer<vtkImageData>);
 		void SetImageData2(vtkSmartPointer<vtkImageData>);
+		void ResetImageData2(vtkSmartPointer<vtkImageData>);
 		void SetSliceDirection(int);
 		void SetSliceIndex(int);
 		void SetCenter(double, double, double);
