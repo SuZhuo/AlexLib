@@ -25,10 +25,13 @@
 		m_right->PreInit();
 	}
 
-	void SliceCouple::SetImage(vtkSmartPointer<vtkImageData> imageData, double* bounds)
+	void SliceCouple::SetImage(vtkSmartPointer<vtkImageData> imageData)
 	{
 		m_imageData = imageData;
-		m_bounds = bounds;
+		m_bounds = imageData->GetBounds();
+		std::cout << "slicebds: " << m_bounds[0] << "  " << m_bounds[1] << "  "
+			<< m_bounds[2] << "  " << m_bounds[3] << "  "
+			<< m_bounds[4] << "  " << m_bounds[5] << "  " << std::endl;
 	}
 
 	void SliceCouple::SetInteractor(vtkSmartPointer<vtkRenderWindowInteractor> iren)

@@ -24,7 +24,7 @@ using namespace SliceLib;
 
 	public:
 		void PreInit();
-		void SetImage(vtkSmartPointer<vtkImageData> imageData, double* bounds);
+		void SetImage(vtkSmartPointer<vtkImageData> imageData);
 		void SetInteractor(vtkSmartPointer<vtkRenderWindowInteractor> iren);
 		void Update(int dir, double angle, bool reset = false);
 		void TurnOn();
