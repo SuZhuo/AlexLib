@@ -26,14 +26,18 @@
 #include"vtkInteractorStyleTrackballCamera.h"
 #include"vtkRendererCollection.h"
 #include"vtkImageActor.h"
+#include"VolumeRenderingToolSlice.hpp"
 
 #include<array>
+#include<memory>
 
 #ifdef SLICELIB_EXPORTS
 #define SLICELIB_API __declspec(dllexport)
 #else
 #define SLICELIB_API __declspec(dllimport)
 #endif
+
+class VolumeRenderingToolSlice;
 
 namespace SliceLib
 {
@@ -83,6 +87,9 @@ namespace SliceLib
 		vtkSmartPointer<vtkResliceCursorThickLineRepresentation> m_ResliceCursorRep;
 
 		vtkSmartPointer<vtkImageViewer2> m_viewer;
+		std::unique_ptr<VolumeRenderingToolSlice> m_tool;
+		vtkSmartPointer<vtkRenderer> m_renderertool;
+		vtkSmartPointer<vtkRenderWindow> m_renWintool;
 
 
 		HWND m_parent;
