@@ -1,7 +1,6 @@
 
 #include "SliceView.hpp"
 //#include"vtkResliceCursorCallback.hpp"
-#include<memory>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL)
 VTK_MODULE_INIT(vtkInteractionStyle)
@@ -34,8 +33,6 @@ namespace SliceLib
 		m_ImageplaneWidget->RestrictPlaneToVolumeOn();
 		m_ImageplaneWidget->DisplayTextOn();
 
-		m_viewer = vtkSmartPointer<vtkImageViewer2>::New();
-
 		//m_ResliceCursor = vtkSmartPointer<vtkResliceCursor>::New();
 		//m_ResliceCursorWidget = vtkSmartPointer<vtkResliceCursorWidget>::New();
 		//m_ResliceCursorRep = vtkSmartPointer<vtkResliceCursorThickLineRepresentation>::New();
@@ -46,9 +43,24 @@ namespace SliceLib
 		std::unique_ptr<RECT> prect(new RECT());
 		GetWindowRect(m_parent, prect.get());
 
-		m_viewer->SetParentId(m_parent);
-		m_viewer->GetRenderWindow()->SetSize(prect->right - prect->left,
-			prect->bottom - prect->top);
+		//m_viewer = vtkSmartPointer<vtkImageViewer2>::New();
+		//m_viewer->SetParentId(m_parent);
+		//m_viewer->GetRenderWindow()->SetSize(prect->right - prect->left,
+		//	prect->bottom - prect->top);
+
+		m_tool = std::unique_ptr<VolumeRenderingToolSlice>(new VolumeRenderingToolSlice());
+		m_renderertool = vtkSmartPointer<vtkRenderer>::New();
+		m_renWintool = vtkSmartPointer<vtkRenderWindow>::New();
+		m_renWintool->SetSize(prect->right - prect->left, prect->bottom - prect->top);
+		m_renWintool->SetParentId(m_parent);
+		m_renWintool->AddRenderer(m_renderertool);
+		if (m_renWintool->GetInteractor() == nullptr)
+		{
+			auto iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+			iren->SetRenderWindow(m_renWintool);
+			iren->Initialize();
+		}
+		
 
 		GetWindowRect(m_note, prect.get());
 		m_renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -132,7 +144,8 @@ namespace SliceLib
 		//m_renderer->ResetCamera();
 		//m_renderer->GetActiveCamera()->
 		m_renWin->Render();
-		m_viewer->Render();
+		m_renWintool->Render();
+		//m_viewer->Render();
 	}
 
 	void SliceView::SetCenter(double c0, double c1, double c2)
@@ -226,30 +239,36 @@ namespace SliceLib
 		m_ImageplaneWidget->On();
 		//m_ImageplaneWidget->InteractionOn();
 
-		double* range = m_ImageData->GetScalarRange();
-
-		m_viewer->SetInputData(m_ImageplaneWidget->GetResliceOutput());
-		//auto iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-		//m_viewer->SetupInteractor(iren);
-		
-		//m_viewer->SetRenderWindow(m_renWin);
-
-		
-		m_viewer->SetColorLevel((range[1] - range[0]) / 2);
-		m_viewer->SetColorWindow(range[1] - range[0]);
-		m_viewer->SetSlice(1);
-		m_viewer->SetSliceOrientationToXY();
-		m_viewer->GetImageActor()->RotateX(180);
-		m_viewer->Render();
-		//iren->Start();
-
-		//if (m_direction == 1)
+		////////////using VolumeRenderingToolSlice
+		//auto imageData = vtkSmartPointer<vtkImageData>::New();
+		//auto info = imageData->GetInformation();
+		//imageData->SetDimensions(60, 98, 1);
+		//imageData->SetSpacing(0.28, 0.28, 0.04);
+		//imageData->SetScalarType(VTK_UNSIGNED_SHORT, info);
+		//imageData->SetNumberOfScalarComponents(1, info);
+		//imageData->AllocateScalars(info);
+		//unsigned short* ptr = (unsigned short*)(imageData->GetScalarPointer());
+		//for (int i = 0; i < 60 * 98; i++)
 		//{
-		//	m_renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
+		//	*(ptr++) = 10;
 		//}
+		//m_tool->SetImageData(imageData);
+		m_tool->SetImageData(m_ImageplaneWidget->GetResliceOutput());	
+		m_tool->Update2();
+		m_renderertool->AddActor(m_tool->GetVolume());
+		m_renderertool->ResetCamera();
+		m_renWintool->Render();
 
+		////using vtkImageViewer2
 		//double* range = m_ImageData->GetScalarRange();
-		m_ImageplaneWidget->SetWindowLevel(range[1] - range[0], (range[1] - range[0]) / 2);
+		//m_viewer->SetInputData(m_ImageplaneWidget->GetResliceOutput());
+		//m_viewer->SetColorLevel((range[1] - range[0]) / 2);
+		//m_viewer->SetColorWindow(range[1] - range[0]);
+		//m_viewer->SetSlice(1);
+		//m_viewer->SetSliceOrientationToXY();
+		//m_viewer->GetImageActor()->RotateX(180);
+		//m_viewer->Render();
+		//m_ImageplaneWidget->SetWindowLevel(range[1] - range[0], (range[1] - range[0]) / 2);
 	}
 
 	void SliceView::RotateTo(double* norm)
