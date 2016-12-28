@@ -165,21 +165,22 @@ namespace SliceLib
 
 		m_ImageplaneWidget->SetInputData(m_ImageData);
 		m_ImageplaneWidget->SetPlaneOrientation(m_direction);
-
 		m_ImageplaneWidget->SetSliceIndex(m_index);
 
-		double* range = m_ImageData->GetScalarRange();
+		m_tool->SetImageData(m_ImageplaneWidget->GetResliceOutput());
+		m_tool->UpdateImage();
+		m_renderertool->ResetCamera();
+		m_renWintool->Render();
 
-		m_viewer->SetInputData(m_ImageplaneWidget->GetResliceOutput());
-
-		m_viewer->SetColorLevel((range[1] - range[0]) / 2);
-		m_viewer->SetColorWindow(range[1] - range[0]);
-		m_viewer->SetSlice(1);
-		m_viewer->SetSliceOrientationToXY();
-		m_viewer->GetImageActor()->RotateX(180);
-		m_viewer->Render();
-
-		m_ImageplaneWidget->SetWindowLevel(range[1] - range[0], (range[1] - range[0]) / 2);
+		//double* range = m_ImageData->GetScalarRange();
+		//m_viewer->SetInputData(m_ImageplaneWidget->GetResliceOutput());
+		//m_viewer->SetColorLevel((range[1] - range[0]) / 2);
+		//m_viewer->SetColorWindow(range[1] - range[0]);
+		//m_viewer->SetSlice(1);
+		//m_viewer->SetSliceOrientationToXY();
+		//m_viewer->GetImageActor()->RotateX(180);
+		//m_viewer->Render();
+		//m_ImageplaneWidget->SetWindowLevel(range[1] - range[0], (range[1] - range[0]) / 2);
 	}
 
 	void SliceView::SetImageData2(vtkSmartPointer<vtkImageData> imageData)
