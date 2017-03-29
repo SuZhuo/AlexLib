@@ -19,6 +19,18 @@ namespace SliceLib
 	{
 	}
 
+	void SliceView::UpdateSize()
+	{
+		std::unique_ptr<RECT> prect(new RECT());
+		GetWindowRect(m_parent, prect.get());
+		m_renWintool->SetSize(prect->right - prect->left, prect->bottom - prect->top);
+		
+		GetWindowRect(m_note, prect.get());
+		m_renWin->SetSize(prect->right - prect->left, prect->bottom - prect->top);
+
+		m_renWintool->Render();
+		m_renWin->Render();
+	}
 
 	void SliceView::PreInit()
 	{

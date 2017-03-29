@@ -41,6 +41,7 @@ using namespace SliceLib;
 		void Calibrate();
 		void GoCenter();
 		void Reset(vtkSmartPointer<vtkImageData> imageData);
+		void UpdateSize();
 
 	private:
 		std::unique_ptr<double[]> Rotate(double* norm, int dir, double angle);

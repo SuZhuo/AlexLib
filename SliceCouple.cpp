@@ -19,6 +19,17 @@
 		delete m_right;
 	}
 
+	void SliceCouple::UpdateSize()
+	{
+		std::unique_ptr<RECT> prect(new RECT());
+		GetWindowRect(m_hnote, prect.get());
+		m_renWinNote->SetSize(prect->right - prect->left,
+			prect->bottom - prect->top);
+		m_renWinNote->Render();
+		m_left->UpdateSize();
+		m_right->UpdateSize();
+	}
+
 	void SliceCouple::PreInit()
 	{
 		m_left->PreInit();

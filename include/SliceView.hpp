@@ -64,6 +64,7 @@ namespace SliceLib
 		void RotateTo(double* norm);
 		void Update(vtkSmartPointer<vtkTransform>);
 		void Update(double*);
+		void UpdateSize();
 
 		//m_AxialView, m_SagittalView, m_CoronalView, m_3DView
 		static void GroupViews(vtkSmartPointer<vtkImageData> imageData,

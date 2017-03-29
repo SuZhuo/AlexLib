@@ -77,7 +77,8 @@ void VolumeRenderingToolSlice::Update2()
 
 	//m_mapper2D = vtkSmartPointer<vtkVolumeTextureMapper2D>::New();
 	//设定体数据中不同标量值的透明度
-	m_opacity->AddPoint(0, 1.0);
+	m_opacity->AddPoint(0, 0.0);
+	m_opacity->AddPoint(1, 1.0);
 	//m_opacity->AddPoint(150, 0.5);
 	//m_opacity->AddPoint(5000, 0.7);
 	//m_opacity->AddPoint(10000, 1.0);
