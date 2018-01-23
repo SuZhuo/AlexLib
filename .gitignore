@@ -3,9 +3,11 @@ Debug
 x64
 *.ico
 *.jpg
+*.jpeg
 *.vcxproj
 *.filters
 *.user
 *.dat
 *.resx
 *.png
+*.sln
